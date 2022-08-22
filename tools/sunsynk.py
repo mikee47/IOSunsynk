@@ -334,10 +334,10 @@ def main():
         generate('src/include/Sunsynk/Sunsynk.h', values)
 
         values = dict(
-            unit_suffixes = ", ".join(f"\"{u.suffix}\"" for u in Unit),
+            unit_suffixes = ", ".join(f'"{u.suffix}"' for u in Unit),
             unit_suffix_lengths = ", ".join(str(len(u.suffix)) for u in Unit),
-            regnames = "\n".join(f"DEFINE_FSTR({r.name}, \"{r.name}\")" for r in SUNSYNK_REGISTERS),
-            regdefs = "\n".join(f"\t{{&RegName::{r.name}, {r.addr}, Unit::{r.unit.name}, {r.scale}, {attrvalue(r.attr):#04x}}}, // {r.name}" for r in SUNSYNK_REGISTERS),
+            regnames = "\n".join(f'DEFINE_FSTR({r.name}, "{r.name}")' for r in SUNSYNK_REGISTERS),
+            regdefs = "\n".join(f'\t{{&RegName::{r.name}, {r.addr}, Unit::{r.unit.name}, {r.scale}, {attrvalue(r.attr):#04x}}},' for r in SUNSYNK_REGISTERS),
         )
         generate('src/Sunsynk.cpp', values)
 
