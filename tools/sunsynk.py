@@ -338,6 +338,22 @@ def main():
         )
         generate('src/Sunsynk.cpp', values)
 
+        # Javascript
+        def jsEnumValues(enum):
+            return "\n".join(f"\t{e.name}: {i}," for i, e in enumerate(enum))
+
+        def jsAttrValue(attr):
+            return ", ".join(str(a) for a in attr) if type(attr) is list else str(attr)
+
+        values = dict(
+            enum_Unit = jsEnumValues(Unit),
+            enum_Attr = jsEnumValues(Attr),
+            enum_Attr_len = len(Attr),
+            unit_suffixes = ", ".join(f'"{u.suffix}"' for u in Unit),
+            unit_suffix_lengths = ", ".join(str(len(u.suffix)) for u in Unit),
+            regdefs = "".join(f'\t{r.name}: new RegDef("{r.name}", {r.addr}, Unit.{r.unit.name}, {r.scale}, [{jsAttrValue(r.attr)}]),\n' for r in SUNSYNK_REGISTERS),
+        )
+        generate('src/sunsynk.js', values)
 
 if __name__ == "__main__":
     main()
