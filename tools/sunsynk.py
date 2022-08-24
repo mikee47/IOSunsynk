@@ -316,10 +316,7 @@ def main():
                 f.write(tmpl.substitute(values))
 
         def enumValues(enum):
-            s = ""
-            for e in enum:
-                s += "\t%s,\n" % e.name
-            return s
+            return "\n".join(f"\t{e.name} = {i}," for i, e in enumerate(enum))
 
         def attrvalue(attr):
             return sum((1 << a) for a in attr) if type(attr) is list else 1 << attr
