@@ -174,7 +174,7 @@ int Device::getRawValue(Register reg) const
 	if(info.getAttr(Attr::Virtual)) {
 		switch(reg) {
 		case Register::Efficiency: {
-			unsigned powerIn = getRawValue(Register::PvPower1) + getRawValue(Register::PvPower2);
+			unsigned powerIn = getRawValue(Register::Pv1Power) + getRawValue(Register::Pv2Power);
 			unsigned powerOut = getRawValue(Register::InverterPowerTotal);
 			int batteryPower = getRawValue(Register::BatteryPower);
 			if(batteryPower < 0) {
@@ -218,8 +218,8 @@ void Device::getValues(JsonObject json) const
 	addValue(Register::InverterPowerTotal);
 	addValue(Register::LoadPowerTotal);
 	addValue(Register::AuxPower);
-	addValue(Register::PvPower1);
-	addValue(Register::PvPower2);
+	addValue(Register::Pv1Power);
+	addValue(Register::Pv2Power);
 	addValue(Register::BatteryPower);
 	addValue(Register::BatteryVoltage);
 	addValue(Register::BatteryCurrent);

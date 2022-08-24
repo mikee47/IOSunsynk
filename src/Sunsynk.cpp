@@ -143,10 +143,10 @@ DEFINE_FSTR(BatteryTemp, "BatteryTemp")
 DEFINE_FSTR(BatteryVoltage, "BatteryVoltage")
 DEFINE_FSTR(BatterySOC, "BatterySOC")
 DEFINE_FSTR(Undefined185, "Undefined185")
-DEFINE_FSTR(PvPower1, "PvPower1")
-DEFINE_FSTR(PvPower2, "PvPower2")
-DEFINE_FSTR(PvPower3, "PvPower3")
-DEFINE_FSTR(PvPower4, "PvPower4")
+DEFINE_FSTR(Pv1Power, "Pv1Power")
+DEFINE_FSTR(Pv2Power, "Pv2Power")
+DEFINE_FSTR(Pv3Power, "Pv3Power")
+DEFINE_FSTR(Pv4Power, "Pv4Power")
 DEFINE_FSTR(BatteryPower, "BatteryPower")
 DEFINE_FSTR(BatteryCurrent, "BatteryCurrent")
 DEFINE_FSTR(InverterFrequency, "InverterFrequency")
@@ -276,11 +276,11 @@ DEFINE_FSTR_ARRAY(regInfo, RegInfo,
 	{&RegName::SelfCheckingTime, 45, Unit::NONE, 0, 0x02},
 	{&RegName::IslandProtectionEnable, 46, Unit::NONE, 0, 0x02},
 	{&RegName::RunState, 59, Unit::NONE, 0, 0x02},
-	{&RegName::ActiveEnergyToday, 60, Unit::WATTH, 2, 0x01},
-	{&RegName::ReactiveEnergyToday, 61, Unit::VARH, 2, 0x01},
+	{&RegName::ActiveEnergyToday, 60, Unit::WATTH, 2, 0x05},
+	{&RegName::ReactiveEnergyToday, 61, Unit::VARH, 2, 0x05},
 	{&RegName::GridWorkTimeToday, 62, Unit::SECOND, 0, 0x01},
-	{&RegName::ActiveEnergyTotal, 63, Unit::WATTH, 2, 0x01},
-	{&RegName::ActiveEnergyTotalHigh, 64, Unit::WATTH, 2, 0x09},
+	{&RegName::ActiveEnergyTotal, 63, Unit::WATTH, 2, 0x05},
+	{&RegName::ActiveEnergyTotalHigh, 64, Unit::WATTH, 2, 0x0d},
 	{&RegName::PvEnergyMonth, 65, Unit::WATTH, 3, 0x01},
 	{&RegName::LoadEnergyMonth, 66, Unit::WATTH, 3, 0x01},
 	{&RegName::GridEnergyMonth, 67, Unit::WATTH, 3, 0x01},
@@ -359,10 +359,10 @@ DEFINE_FSTR_ARRAY(regInfo, RegInfo,
 	{&RegName::BatteryVoltage, 183, Unit::VOLT, -2, 0x01},
 	{&RegName::BatterySOC, 184, Unit::PERCENT, 0, 0x01},
 	{&RegName::Undefined185, 185, Unit::NONE, 0, 0x01},
-	{&RegName::PvPower1, 186, Unit::WATT, 0, 0x01},
-	{&RegName::PvPower2, 187, Unit::WATT, 0, 0x01},
-	{&RegName::PvPower3, 188, Unit::WATT, 0, 0x01},
-	{&RegName::PvPower4, 189, Unit::WATT, 0, 0x01},
+	{&RegName::Pv1Power, 186, Unit::WATT, 0, 0x01},
+	{&RegName::Pv2Power, 187, Unit::WATT, 0, 0x01},
+	{&RegName::Pv3Power, 188, Unit::WATT, 0, 0x01},
+	{&RegName::Pv4Power, 189, Unit::WATT, 0, 0x01},
 	{&RegName::BatteryPower, 190, Unit::WATT, 0, 0x05},
 	{&RegName::BatteryCurrent, 191, Unit::AMP, -2, 0x05},
 	{&RegName::InverterFrequency, 193, Unit::HERTZ, -2, 0x01},
