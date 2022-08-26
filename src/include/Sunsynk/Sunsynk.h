@@ -266,8 +266,8 @@ constexpr size_t registerCount = 213;
 struct RegInfo {
 	const FlashString* name;
 	uint16_t addr;
-	Unit unit;
-	int8_t scale;
+	Unit unit: 5;
+	int8_t scale: 3;
 	uint8_t attr; // Attributes
 
 	bool getAttr(Attr a) const
@@ -275,6 +275,8 @@ struct RegInfo {
 		return Attributes(attr)[a];
 	}
 };
+
+static_assert(sizeof(RegInfo) == 8);
 
 RegInfo getRegInfo(Register reg);
 
