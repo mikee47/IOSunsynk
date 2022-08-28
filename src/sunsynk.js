@@ -285,5 +285,6 @@ const SunsynkRegister = Object.freeze({
 	SmartLoadOpenDelay: new RegDef("SmartLoadOpenDelay", 294, Unit.SECOND, 0, [Attr.ReadWrite]),
 	OutputPfValue: new RegDef("OutputPfValue", 295, Unit.PERCENT, -1, [Attr.ReadWrite]),
 	Efficiency: new RegDef("Efficiency", 0, Unit.PERCENT, -1, [Attr.ReadOnly, Attr.Virtual]),
+	PvPowerTotal: new RegDef("PvPowerTotal", 0, Unit.WATT, 0, [Attr.ReadOnly, Attr.Virtual]),
 
 });

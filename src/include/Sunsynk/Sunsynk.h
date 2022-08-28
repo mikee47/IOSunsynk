@@ -259,9 +259,10 @@ enum class Register {
 	SmartLoadOpenDelay = 210,
 	OutputPfValue = 211,
 	Efficiency = 212,
+	PvPowerTotal = 213,
 };
 
-constexpr size_t registerCount = 213;
+constexpr size_t registerCount = 214;
 
 struct RegInfo {
 	const FlashString* name;

@@ -294,6 +294,7 @@ SUNSYNK_REGISTERS = [
     RegDef(294, 'SmartLoadOpenDelay', Unit.SECOND, SCALE_NONE, Attr.ReadWrite),
     RegDef(295, 'OutputPfValue', Unit.PERCENT, SCALE_0_1, Attr.ReadWrite),
     RegDef(0, 'Efficiency', Unit.PERCENT, SCALE_0_1, [Attr.ReadOnly, Attr.Virtual]),
+    RegDef(0, 'PvPowerTotal', Unit.WATT, SCALE_NONE, [Attr.ReadOnly, Attr.Virtual]),
 ]
 
 SUNSYNK_REGMAP = OrderedDict([(r.addr, r) for r in SUNSYNK_REGISTERS])

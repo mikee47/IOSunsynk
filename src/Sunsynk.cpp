@@ -232,6 +232,7 @@ DEFINE_FSTR(GridPeakShavingPower, "GridPeakShavingPower")
 DEFINE_FSTR(SmartLoadOpenDelay, "SmartLoadOpenDelay")
 DEFINE_FSTR(OutputPfValue, "OutputPfValue")
 DEFINE_FSTR(Efficiency, "Efficiency")
+DEFINE_FSTR(PvPowerTotal, "PvPowerTotal")
 } // namespace RegName
 
 DEFINE_FSTR_ARRAY(regInfo, RegInfo,
@@ -448,6 +449,7 @@ DEFINE_FSTR_ARRAY(regInfo, RegInfo,
 	{&RegName::SmartLoadOpenDelay, 294, Unit::SECOND, 0, 0x02},
 	{&RegName::OutputPfValue, 295, Unit::PERCENT, -1, 0x02},
 	{&RegName::Efficiency, 0, Unit::PERCENT, -1, 0x11},
+	{&RegName::PvPowerTotal, 0, Unit::WATT, 0, 0x11},
 )
 
 RegInfo getRegInfo(Register reg)

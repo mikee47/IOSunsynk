@@ -170,11 +170,13 @@ void Device::updateRegisters(Register reg, const void* values, size_t count)
 
 int Device::getRawValue(Register reg) const
 {
+	auto getPvPowerTotal = [this]() { return getRawValue(Register::Pv1Power) + getRawValue(Register::Pv2Power); };
+
 	auto info = getRegInfo(reg);
 	if(info.getAttr(Attr::Virtual)) {
 		switch(reg) {
 		case Register::Efficiency: {
-			unsigned powerIn = getRawValue(Register::Pv1Power) + getRawValue(Register::Pv2Power);
+			unsigned powerIn = getPvPowerTotal();
 			unsigned powerOut = getRawValue(Register::InverterPowerTotal);
 			int batteryPower = getRawValue(Register::BatteryPower);
 			if(batteryPower < 0) {
@@ -185,6 +187,9 @@ int Device::getRawValue(Register reg) const
 
 			return powerIn ? ((10000U * powerOut / powerIn) + 5) / 10U : 0;
 		}
+
+		case Register::PvPowerTotal:
+			return getPvPowerTotal();
 
 		default:
 			return 0;
