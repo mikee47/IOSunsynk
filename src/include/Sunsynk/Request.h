@@ -45,10 +45,10 @@ public:
 	Function fillRequestData(PDU::Data& data) override;
 	ErrorCode callback(PDU& pdu) override;
 
+	RegisterSet regset;
+
 private:
-	std::unique_ptr<Range[]> range;
-	uint8_t rangeCount{0};
-	uint8_t rangeIndex{0};
+	uint8_t regIndex{0};
 };
 
 } // namespace Sunsynk

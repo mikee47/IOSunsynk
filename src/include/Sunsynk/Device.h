@@ -21,19 +21,12 @@
 #pragma once
 
 #include <IO/Modbus/Device.h>
-#include "Sunsynk.h"
+#include "Register.h"
 
 namespace IO::Modbus::Sunsynk
 {
-struct Range {
-	Register first;
-	Register last;
-};
-
 class Device : public Modbus::Device
 {
-	friend class Request;
-
 public:
 	class Factory : public FactoryTemplate<Device>
 	{
@@ -49,21 +42,6 @@ public:
 	using Modbus::Device::Device;
 
 	IO::Request* createRequest() override;
-
-	int getRawValue(Register reg) const;
-	float getValue(Register reg) const;
-	String getValueString(Register reg) const;
-	void getValues(JsonObject json) const;
-
-	bool isAuxOutputActive() const
-	{
-		return getRawValue(Register::AuxRelayStatus) == 0x0011;
-	}
-
-	void updateRegisters(Register reg, const void* values, size_t count);
-
-private:
-	uint16_t regValues[registerCount]{};
 };
 
 } // namespace IO::Modbus::Sunsynk
