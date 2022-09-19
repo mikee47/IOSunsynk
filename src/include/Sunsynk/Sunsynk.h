@@ -13,7 +13,7 @@
 
 namespace IO::Modbus::Sunsynk
 {
-enum class Unit {
+enum class Unit: uint8_t {
 	NONE = 0,
 	POWERFACTOR = 1,
 	WATT = 2,
@@ -35,7 +35,7 @@ enum class Unit {
 extern const char* unitSuffixes[];
 extern const uint8_t unitSuffixLengths[];
 
-enum class Attr {
+enum class Attr: uint8_t {
 	ReadOnly = 0,
 	ReadWrite = 1,
 	Signed = 2,
@@ -45,7 +45,7 @@ enum class Attr {
 
 using Attributes = BitSet<uint8_t, Attr, 5>;
 
-enum class Register {
+enum class Register: uint8_t {
 	DeviceType = 0,
 	ModbusAddress = 1,
 	CommsProtocolVersion = 2,
@@ -282,3 +282,8 @@ static_assert(sizeof(RegInfo) == 8);
 RegInfo getRegInfo(Register reg);
 
 } // namespace IO::Modbus::Sunsynk
+
+inline String toString(::IO::Modbus::Sunsynk::Register reg)
+{
+	return *getRegInfo(reg).name;
+}

@@ -13,20 +13,20 @@
 
 namespace IO::Modbus::Sunsynk
 {
-enum class Unit {
+enum class Unit: uint8_t {
 $enum_Unit
 };
 
 extern const char* unitSuffixes[];
 extern const uint8_t unitSuffixLengths[];
 
-enum class Attr {
+enum class Attr: uint8_t {
 $enum_Attr
 };
 
 using Attributes = BitSet<uint8_t, Attr, $enum_Attr_len>;
 
-enum class Register {
+enum class Register: uint8_t {
 $enum_Register
 };
 
@@ -50,3 +50,8 @@ static_assert(sizeof(RegInfo) == 8);
 RegInfo getRegInfo(Register reg);
 
 } // namespace IO::Modbus::Sunsynk
+
+inline String toString(::IO::Modbus::Sunsynk::Register reg)
+{
+	return *getRegInfo(reg).name;
+}
