@@ -150,12 +150,18 @@ int RegisterSet::getRawValue(Register reg) const
 		switch(reg) {
 		case Register::Efficiency: {
 			unsigned powerIn = getPvPowerTotal();
-			unsigned powerOut = getRawValue(Register::InverterPowerTotal);
+			unsigned powerOut = getRawValue(Register::LoadPowerTotal);
 			int batteryPower = getRawValue(Register::BatteryPower);
 			if(batteryPower < 0) {
 				powerOut += -batteryPower;
 			} else {
 				powerIn += batteryPower;
+			}
+			int gridPower = getRawValue(Register::GridPowerTotal);
+			if(gridPower < 0) {
+				powerOut += -gridPower;
+			} else {
+				powerIn += gridPower;
 			}
 
 			return powerIn ? ((10000U * powerOut / powerIn) + 5) / 10U : 0;
