@@ -125,7 +125,7 @@ String valueToString(int value, Unit unit, int scale)
 		len += neg;
 	} else {
 		// r.scale > 0
-		ultoa(value, buffer, 10);
+		ltoa(value, buffer, 10);
 		len = strlen(buffer);
 		while(scale-- != 0) {
 			buffer[len++] = '0';
