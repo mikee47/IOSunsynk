@@ -35,9 +35,10 @@ constexpr size_t registerCount = $enum_Register_len;
 struct RegInfo {
 	const FlashString* name;
 	uint16_t addr;
-	Unit unit: 5;
-	int8_t scale: 3;
+	Unit unit;
+	int8_t scale;
 	uint8_t attr; // Attributes
+	Register reg2; // Complementary register (low or high)
 
 	bool getAttr(Attr a) const
 	{
@@ -45,7 +46,7 @@ struct RegInfo {
 	}
 };
 
-static_assert(sizeof(RegInfo) == 8);
+static_assert(sizeof(RegInfo) == 12);
 
 RegInfo getRegInfo(Register reg);
 

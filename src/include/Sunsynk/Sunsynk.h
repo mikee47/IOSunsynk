@@ -39,11 +39,12 @@ enum class Attr: uint8_t {
 	ReadOnly = 0,
 	ReadWrite = 1,
 	Signed = 2,
-	HighWord = 3,
-	Virtual = 4,
+	LowWord = 3,
+	HighWord = 4,
+	Virtual = 5,
 };
 
-using Attributes = BitSet<uint8_t, Attr, 5>;
+using Attributes = BitSet<uint8_t, Attr, 6>;
 
 enum class Register: uint8_t {
 	DeviceType = 0,
@@ -57,7 +58,7 @@ enum class Register: uint8_t {
 	FwVerControl = 8,
 	FwVerComms = 9,
 	SafetyType = 10,
-	RatedPowerLow = 11,
+	RatedPower = 11,
 	RatedPowerHigh = 12,
 	MpptNoAndPhases = 13,
 	RemoteLock = 14,
@@ -267,9 +268,10 @@ constexpr size_t registerCount = 214;
 struct RegInfo {
 	const FlashString* name;
 	uint16_t addr;
-	Unit unit: 5;
-	int8_t scale: 3;
+	Unit unit;
+	int8_t scale;
 	uint8_t attr; // Attributes
+	Register reg2; // Complementary register (low or high)
 
 	bool getAttr(Attr a) const
 	{
@@ -277,7 +279,7 @@ struct RegInfo {
 	}
 };
 
-static_assert(sizeof(RegInfo) == 8);
+static_assert(sizeof(RegInfo) == 12);
 
 RegInfo getRegInfo(Register reg);
 

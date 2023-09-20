@@ -175,6 +175,18 @@ int RegisterSet::getRawValue(Register reg) const
 		}
 	}
 
+	if(info.getAttr(Attr::LowWord)) {
+		auto lowWord = (*this)[reg];
+		auto highWord = (*this)[info.reg2];
+		return (highWord << 16) | lowWord;
+	}
+
+	if(info.getAttr(Attr::HighWord)) {
+		auto highWord = (*this)[reg];
+		auto lowWord = (*this)[info.reg2];
+		return (highWord << 16) | lowWord;
+	}
+
 	uint16_t value = (*this)[reg];
 	return info.getAttr(Attr::Signed) ? int16_t(value) : value;
 }
@@ -195,6 +207,10 @@ void RegisterSet::getValues(JsonObject json) const
 {
 	for(auto r : *this) {
 		auto info = getRegInfo(r.key());
+		if(info.getAttr(Attr::HighWord)) {
+			// Assume set contains low register
+			continue;
+		}
 		json[*info.name] = getValueString(r.key());
 	}
 }
