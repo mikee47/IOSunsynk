@@ -18,12 +18,9 @@
  ****/
 
 #include "include/Sunsynk/Register.h"
+#include <IO/Strings.h>
 
-namespace IO
-{
-namespace Modbus
-{
-namespace Sunsynk
+namespace IO::Modbus::Sunsynk
 {
 namespace
 {
@@ -203,18 +200,24 @@ String RegisterSet::getValueString(Register reg) const
 	return valueToString(getRawValue(reg), r.unit, r.scale);
 }
 
-void RegisterSet::getValues(JsonObject json) const
+void RegisterSet::getValues(JsonArray json) const
 {
+	uint16_t addr{};
+	JsonArray list;
 	for(auto r : *this) {
 		auto info = getRegInfo(r.key());
 		if(info.getAttr(Attr::HighWord)) {
 			// Assume set contains low register
 			continue;
 		}
-		json[*info.name] = getValueString(r.key());
+		if(info.addr != addr || !list) {
+			addr = info.addr;
+			list = json.createNestedArray();
+			list.add(addr);
+		}
+		list.add(getRawValue(r.key()));
+		++addr;
 	}
 }
 
-} // namespace Sunsynk
-} // namespace Modbus
-} // namespace IO
+} // namespace IO::Modbus::Sunsynk

@@ -55,11 +55,8 @@ class RegDef {
 		this.attr = new Set(attr);
 	}
 
-	// Convert 16-bit unsigned integer value into actual floating point value
+	// Convert integer value into actual floating point value
     fromint(value) {
-		if (this.attr.has(Attr.Signed) && value >= 0x8000) {
-			value -= 0x10000;
-		}
         value *= Math.pow(10, this.scale);
         if (this.unit == Unit.CELSIUS) {
             value -= 100;
@@ -69,7 +66,6 @@ class RegDef {
 		}
         return value;
 	}
-
 };
 
 const SunsynkRegister = Object.freeze({

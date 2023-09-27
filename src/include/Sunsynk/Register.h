@@ -63,7 +63,7 @@ public:
 	int getRawValue(Register reg) const;
 	float getValue(Register reg) const;
 	String getValueString(Register reg) const;
-	void getValues(JsonObject json) const;
+	void getValues(JsonArray json) const;
 
 	bool isAuxOutputActive() const
 	{

@@ -160,7 +160,7 @@ void Request::getJson(JsonObject json) const
 		return;
 	}
 
-	auto values = json.createNestedObject(FS_value);
+	auto values = json.createNestedArray(FS_value);
 	regset.getValues(values);
 }
 
