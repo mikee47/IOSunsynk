@@ -13,9 +13,9 @@
 
 namespace IO::Modbus::Sunsynk
 {
-const char* unitSuffixes[]{"", "", "W", "Wh", "VARh", "A", "Ah", "V", "R", "Hz", "°C", "%", "s", "h", "", ""};
+const char* unitSuffixes[]{"", "", "W", "Wh", "VARh", "A", "Ah", "V", "R", "Hz", "°C", "%", "s", "h", "", "", "", "", "", ""};
 
-const uint8_t unitSuffixLengths[]{0, 0, 1, 2, 4, 1, 2, 1, 1, 2, 2, 1, 1, 1, 0, 0};
+const uint8_t unitSuffixLengths[]{0, 0, 1, 2, 4, 1, 2, 1, 1, 2, 2, 1, 1, 1, 0, 0, 0, 0, 0, 0};
 
 namespace RegName
 {
@@ -59,10 +59,11 @@ DEFINE_FSTR(SwitchOnOffEnable, "SwitchOnOffEnable")
 DEFINE_FSTR(FactoryResetEnable, "FactoryResetEnable")
 DEFINE_FSTR(SelfCheckingTime, "SelfCheckingTime")
 DEFINE_FSTR(IslandProtectionEnable, "IslandProtectionEnable")
+DEFINE_FSTR(MaxSolarPower, "MaxSolarPower")
 DEFINE_FSTR(RunState, "RunState")
 DEFINE_FSTR(ActiveEnergyToday, "ActiveEnergyToday")
 DEFINE_FSTR(ReactiveEnergyToday, "ReactiveEnergyToday")
-DEFINE_FSTR(GridWorkTimeToday, "GridWorkTimeToday")
+DEFINE_FSTR(GenEnergyToday, "GenEnergyToday")
 DEFINE_FSTR(ActiveEnergyTotal, "ActiveEnergyTotal")
 DEFINE_FSTR(ActiveEnergyTotalHigh, "ActiveEnergyTotalHigh")
 DEFINE_FSTR(PvEnergyMonth, "PvEnergyMonth")
@@ -142,7 +143,6 @@ DEFINE_FSTR(Undefined181, "Undefined181")
 DEFINE_FSTR(BatteryTemp, "BatteryTemp")
 DEFINE_FSTR(BatteryVoltage, "BatteryVoltage")
 DEFINE_FSTR(BatterySOC, "BatterySOC")
-DEFINE_FSTR(Undefined185, "Undefined185")
 DEFINE_FSTR(Pv1Power, "Pv1Power")
 DEFINE_FSTR(Pv2Power, "Pv2Power")
 DEFINE_FSTR(Pv3Power, "Pv3Power")
@@ -231,6 +231,28 @@ DEFINE_FSTR(GenPeakShavingPower, "GenPeakShavingPower")
 DEFINE_FSTR(GridPeakShavingPower, "GridPeakShavingPower")
 DEFINE_FSTR(SmartLoadOpenDelay, "SmartLoadOpenDelay")
 DEFINE_FSTR(OutputPfValue, "OutputPfValue")
+DEFINE_FSTR(ExtRelayBit, "ExtRelayBit")
+DEFINE_FSTR(ChargingVoltage, "ChargingVoltage")
+DEFINE_FSTR(DischargeVoltage, "DischargeVoltage")
+DEFINE_FSTR(ChargingCurrentLimiting, "ChargingCurrentLimiting")
+DEFINE_FSTR(DischargeCurrentLimiting, "DischargeCurrentLimiting")
+DEFINE_FSTR(RealTimeCapacity, "RealTimeCapacity")
+DEFINE_FSTR(RealTimeVoltage, "RealTimeVoltage")
+DEFINE_FSTR(RealTimeCurrent, "RealTimeCurrent")
+DEFINE_FSTR(RealTimeTemp, "RealTimeTemp")
+DEFINE_FSTR(MaxChargeCurrentLimit, "MaxChargeCurrentLimit")
+DEFINE_FSTR(MaxDischargeCurrentLimit, "MaxDischargeCurrentLimit")
+DEFINE_FSTR(LithiumBatteryAlarm, "LithiumBatteryAlarm")
+DEFINE_FSTR(LithiumBatteryFaultLocation, "LithiumBatteryFaultLocation")
+DEFINE_FSTR(LithiumBatterySymbol2, "LithiumBatterySymbol2")
+DEFINE_FSTR(LithiumBatteryType, "LithiumBatteryType")
+DEFINE_FSTR(Ex_MeterCT, "Ex_MeterCT")
+DEFINE_FSTR(CT_Ratio, "CT_Ratio")
+DEFINE_FSTR(SpecialFunctionBits, "SpecialFunctionBits")
+DEFINE_FSTR(AC_CoupleFrequencyUpperLimit, "AC_CoupleFrequencyUpperLimit")
+DEFINE_FSTR(CommBoardSettingFunction, "CommBoardSettingFunction")
+DEFINE_FSTR(ParallelRegister1, "ParallelRegister1")
+DEFINE_FSTR(ParallelRegister2, "ParallelRegister2")
 DEFINE_FSTR(Efficiency, "Efficiency")
 DEFINE_FSTR(PvPowerTotal, "PvPowerTotal")
 } // namespace RegName
@@ -239,22 +261,22 @@ DEFINE_FSTR_ARRAY(regInfo, RegInfo,
 	{&RegName::DeviceType, 0, Unit::HEXVAL, 0, 0x01},
 	{&RegName::ModbusAddress, 1, Unit::HEXVAL, 0, 0x01},
 	{&RegName::CommsProtocolVersion, 2, Unit::HEXVAL, 0, 0x01},
-	{&RegName::SerialNumber0, 3, Unit::HEXVAL, 0, 0x01},
-	{&RegName::SerialNumber1, 4, Unit::HEXVAL, 0, 0x01},
-	{&RegName::SerialNumber2, 5, Unit::HEXVAL, 0, 0x01},
-	{&RegName::SerialNumber3, 6, Unit::HEXVAL, 0, 0x01},
-	{&RegName::SerialNumber4, 7, Unit::HEXVAL, 0, 0x01},
+	{&RegName::SerialNumber0, 3, Unit::ASCII, 0, 0x01},
+	{&RegName::SerialNumber1, 4, Unit::ASCII, 0, 0x01},
+	{&RegName::SerialNumber2, 5, Unit::ASCII, 0, 0x01},
+	{&RegName::SerialNumber3, 6, Unit::ASCII, 0, 0x01},
+	{&RegName::SerialNumber4, 7, Unit::ASCII, 0, 0x01},
 	{&RegName::FwVerControl, 13, Unit::HEXVAL, 0, 0x01},
 	{&RegName::FwVerComms, 14, Unit::HEXVAL, 0, 0x01},
 	{&RegName::SafetyType, 15, Unit::HEXVAL, 0, 0x01},
-	{&RegName::RatedPower, 16, Unit::WATT, 1, 0x09, Register::RatedPowerHigh},
-	{&RegName::RatedPowerHigh, 17, Unit::WATT, 1, 0x11, Register::RatedPower},
+	{&RegName::RatedPower, 16, Unit::WATT, -1, 0x09, Register::RatedPowerHigh},
+	{&RegName::RatedPowerHigh, 17, Unit::WATT, -1, 0x11, Register::RatedPower},
 	{&RegName::MpptNoAndPhases, 18, Unit::HEXVAL, 0, 0x01},
 	{&RegName::RemoteLock, 20, Unit::HEXVAL, 0, 0x02},
 	{&RegName::SelfCheckTime, 21, Unit::SECOND, 0, 0x02},
-	{&RegName::SysTimeYearMon, 22, Unit::HEXVAL, 0, 0x02},
-	{&RegName::SysTimeDayHour, 23, Unit::HEXVAL, 0, 0x02},
-	{&RegName::SysTimeMinSec, 24, Unit::HEXVAL, 0, 0x02},
+	{&RegName::SysTimeYearMon, 22, Unit::YEARMON, 0, 0x02},
+	{&RegName::SysTimeDayHour, 23, Unit::DAYHOUR, 0, 0x02},
+	{&RegName::SysTimeMinSec, 24, Unit::MINSEC, 0, 0x02},
 	{&RegName::InsImpedMin, 25, Unit::OHM, 2, 0x02},
 	{&RegName::DcVoltageMax, 26, Unit::VOLT, -1, 0x02},
 	{&RegName::GridVoltageMax, 27, Unit::VOLT, -1, 0x02},
@@ -266,7 +288,7 @@ DEFINE_FSTR_ARRAY(regInfo, RegInfo,
 	{&RegName::StartingVoltageMin, 33, Unit::VOLT, -1, 0x02},
 	{&RegName::OverFreqDeratePoint, 34, Unit::HERTZ, -2, 0x02},
 	{&RegName::OverFreqDeRate, 35, Unit::NONE, 0, 0x02},
-	{&RegName::InternalTempMax, 36, Unit::CELSIUS, -1, 0x06},
+	{&RegName::InternalTempMax, 36, Unit::NONE, -1, 0x06},
 	{&RegName::CommsAddr, 37, Unit::NONE, 0, 0x01},
 	{&RegName::PowerFactorRegulation, 39, Unit::POWERFACTOR, -3, 0x02},
 	{&RegName::ActivePowerRegulation, 40, Unit::PERCENT, -1, 0x02},
@@ -276,10 +298,11 @@ DEFINE_FSTR_ARRAY(regInfo, RegInfo,
 	{&RegName::FactoryResetEnable, 44, Unit::NONE, 0, 0x02},
 	{&RegName::SelfCheckingTime, 45, Unit::NONE, 0, 0x02},
 	{&RegName::IslandProtectionEnable, 46, Unit::NONE, 0, 0x02},
+	{&RegName::MaxSolarPower, 53, Unit::WATT, 0, 0x01},
 	{&RegName::RunState, 59, Unit::NONE, 0, 0x02},
 	{&RegName::ActiveEnergyToday, 60, Unit::WATTH, 2, 0x05},
 	{&RegName::ReactiveEnergyToday, 61, Unit::VARH, 2, 0x05},
-	{&RegName::GridWorkTimeToday, 62, Unit::SECOND, 0, 0x01},
+	{&RegName::GenEnergyToday, 62, Unit::WATTH, 2, 0x01},
 	{&RegName::ActiveEnergyTotal, 63, Unit::WATTH, 2, 0x0d, Register::ActiveEnergyTotalHigh},
 	{&RegName::ActiveEnergyTotalHigh, 64, Unit::WATTH, 2, 0x15, Register::ActiveEnergyTotal},
 	{&RegName::PvEnergyMonth, 65, Unit::WATTH, 3, 0x01},
@@ -359,7 +382,6 @@ DEFINE_FSTR_ARRAY(regInfo, RegInfo,
 	{&RegName::BatteryTemp, 182, Unit::CELSIUS, -1, 0x05},
 	{&RegName::BatteryVoltage, 183, Unit::VOLT, -2, 0x01},
 	{&RegName::BatterySOC, 184, Unit::PERCENT, 0, 0x01},
-	{&RegName::Undefined185, 185, Unit::NONE, 0, 0x01},
 	{&RegName::Pv1Power, 186, Unit::WATT, 0, 0x01},
 	{&RegName::Pv2Power, 187, Unit::WATT, 0, 0x01},
 	{&RegName::Pv3Power, 188, Unit::WATT, 0, 0x01},
@@ -433,7 +455,7 @@ DEFINE_FSTR_ARRAY(regInfo, RegInfo,
 	{&RegName::Prog4Charge, 277, Unit::NONE, 0, 0x02},
 	{&RegName::Prog5Charge, 278, Unit::NONE, 0, 0x02},
 	{&RegName::Prog6Charge, 279, Unit::NONE, 0, 0x02},
-	{&RegName::MicroinverterExportToGridCutoff, 280, Unit::NONE, 0, 0x02},
+	{&RegName::MicroinverterExportToGridCutoff, 280, Unit::HEXVAL, 0, 0x02},
 	{&RegName::RestoreConnectionTime, 282, Unit::SECOND, 0, 0x02},
 	{&RegName::ArcFaultMode, 283, Unit::NONE, 0, 0x02},
 	{&RegName::GridMode, 284, Unit::NONE, 0, 0x02},
@@ -448,6 +470,28 @@ DEFINE_FSTR_ARRAY(regInfo, RegInfo,
 	{&RegName::GridPeakShavingPower, 293, Unit::WATT, 0, 0x02},
 	{&RegName::SmartLoadOpenDelay, 294, Unit::SECOND, 0, 0x02},
 	{&RegName::OutputPfValue, 295, Unit::PERCENT, -1, 0x02},
+	{&RegName::ExtRelayBit, 296, Unit::HEXVAL, 0, 0x01},
+	{&RegName::ChargingVoltage, 312, Unit::VOLT, -2, 0x01},
+	{&RegName::DischargeVoltage, 313, Unit::VOLT, -2, 0x01},
+	{&RegName::ChargingCurrentLimiting, 314, Unit::AMP, 0, 0x01},
+	{&RegName::DischargeCurrentLimiting, 315, Unit::AMP, 0, 0x01},
+	{&RegName::RealTimeCapacity, 316, Unit::PERCENT, 0, 0x01},
+	{&RegName::RealTimeVoltage, 317, Unit::VOLT, -2, 0x01},
+	{&RegName::RealTimeCurrent, 318, Unit::AMP, 0, 0x05},
+	{&RegName::RealTimeTemp, 319, Unit::CELSIUS, -1, 0x01},
+	{&RegName::MaxChargeCurrentLimit, 320, Unit::AMP, 0, 0x01},
+	{&RegName::MaxDischargeCurrentLimit, 321, Unit::AMP, 0, 0x01},
+	{&RegName::LithiumBatteryAlarm, 322, Unit::NONE, 0, 0x01},
+	{&RegName::LithiumBatteryFaultLocation, 323, Unit::HEXVAL, 0, 0x01},
+	{&RegName::LithiumBatterySymbol2, 324, Unit::HEXVAL, 0, 0x01},
+	{&RegName::LithiumBatteryType, 325, Unit::HEXVAL, 0, 0x01},
+	{&RegName::Ex_MeterCT, 326, Unit::HEXVAL, 0, 0x01},
+	{&RegName::CT_Ratio, 327, Unit::NONE, 0, 0x01},
+	{&RegName::SpecialFunctionBits, 328, Unit::HEXVAL, 0, 0x01},
+	{&RegName::AC_CoupleFrequencyUpperLimit, 329, Unit::HERTZ, -2, 0x01},
+	{&RegName::CommBoardSettingFunction, 330, Unit::HEXVAL, 0, 0x01},
+	{&RegName::ParallelRegister1, 417, Unit::HEXVAL, 0, 0x01},
+	{&RegName::ParallelRegister2, 418, Unit::HEXVAL, 0, 0x01},
 	{&RegName::Efficiency, 0, Unit::PERCENT, -1, 0x21},
 	{&RegName::PvPowerTotal, 0, Unit::WATT, 0, 0x21},
 )

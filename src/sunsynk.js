@@ -24,10 +24,14 @@ const Unit = Object.freeze({
 	HOURS: 13,
 	BCDTIME: 14,
 	HEXVAL: 15,
+	ASCII: 16,
+	YEARMON: 17,
+	DAYHOUR: 18,
+	MINSEC: 19,
 });
 
-const unitSuffixes = Object.freeze(["", "", "W", "Wh", "VARh", "A", "Ah", "V", "R", "Hz", "°C", "%", "s", "h", "", ""]);
-const unitSuffixLengths = Object.freeze([0, 0, 1, 2, 4, 1, 2, 1, 1, 2, 2, 1, 1, 1, 0, 0]);
+const unitSuffixes = Object.freeze(["", "", "W", "Wh", "VARh", "A", "Ah", "V", "R", "Hz", "°C", "%", "s", "h", "", "", "", "", "", ""]);
+const unitSuffixLengths = Object.freeze([0, 0, 1, 2, 4, 1, 2, 1, 1, 2, 2, 1, 1, 1, 0, 0, 0, 0, 0, 0]);
 
 const Attr = Object.freeze({
 	ReadOnly: 0,
@@ -55,16 +59,73 @@ class RegDef {
 		this.attr = new Set(attr);
 	}
 
-	// Convert integer value into actual floating point value
-    fromint(value) {
-        value *= Math.pow(10, this.scale);
-        if (this.unit == Unit.CELSIUS) {
-            value -= 100;
+	getIntValue(data) {
+		let value = data[this.addr];
+		if (this.attr.has(Attr.LowWord)) {
+			let highWord = data[this.reg2.addr];
+			return (highWord << 16) | value;
 		}
-        if (this.scale < 0) {
-            value = +(value.toFixed(-this.scale));
+		if (this.attr.has(Attr.HighWord)) {
+			let lowWord = data[this.reg2.addr];
+			return (value << 16) | lowWord;
 		}
-        return value;
+		if (this.attr.has(Attr.Signed) && value >= 0x8000) {
+			value -= 0x10000;
+		}
+		return value;
+	}
+
+	intToFloat(value) {
+		value *= Math.pow(10, this.scale);
+		if (this.unit == Unit.CELSIUS) {
+			value -= 100;
+		}
+		if (this.scale < 0) {
+			value = +(value.toFixed(-this.scale));
+		}
+		return value;
+	}
+
+	intToString(value) {
+		const num2 = function (v) {
+			return v.toString().padStart(2, '0');
+		};
+		const chr = function (v) {
+			return String.fromCharCode(v);
+		};
+
+		switch (this.unit) {
+			case Unit.BCDTIME: {
+				let hour = Math.trunc(value / 100);
+				let min = value % 100;
+				return num2(hour) + ':' + num2(min);
+			}
+			case Unit.HEXVAL:
+				return `0x${hex(value)}`;
+			case Unit.ASCII:
+				return chr(value >> 8) + chr(value & 0xff);
+			case Unit.YEARMON:
+				let year = 2000 + (value >> 8)
+				let month = value & 0xff
+				return year + ', ' + num2(month);
+			case Unit.DAYHOUR: {
+				let day = value >> 8;
+				let hour = value & 0xff;
+				return day + ', ' + num2(hour);
+			}
+			case Unit.MINSEC: {
+				let min = value >> 8;
+				let sec = value & 0xff;
+				return num2(min) + ', ' + num2(sec);
+			}
+		}
+
+		let s = this.intToFloat(value).toString();
+		let suffix = unitSuffixes[this.unit];
+		if (suffix) {
+			s += ' ' + suffix;
+		}
+		return s;
 	}
 };
 
@@ -72,22 +133,22 @@ const SunsynkRegister = Object.freeze({
 	DeviceType: new RegDef("DeviceType", 0, Unit.HEXVAL, 0, [Attr.ReadOnly]),
 	ModbusAddress: new RegDef("ModbusAddress", 1, Unit.HEXVAL, 0, [Attr.ReadOnly]),
 	CommsProtocolVersion: new RegDef("CommsProtocolVersion", 2, Unit.HEXVAL, 0, [Attr.ReadOnly]),
-	SerialNumber0: new RegDef("SerialNumber0", 3, Unit.HEXVAL, 0, [Attr.ReadOnly]),
-	SerialNumber1: new RegDef("SerialNumber1", 4, Unit.HEXVAL, 0, [Attr.ReadOnly]),
-	SerialNumber2: new RegDef("SerialNumber2", 5, Unit.HEXVAL, 0, [Attr.ReadOnly]),
-	SerialNumber3: new RegDef("SerialNumber3", 6, Unit.HEXVAL, 0, [Attr.ReadOnly]),
-	SerialNumber4: new RegDef("SerialNumber4", 7, Unit.HEXVAL, 0, [Attr.ReadOnly]),
+	SerialNumber0: new RegDef("SerialNumber0", 3, Unit.ASCII, 0, [Attr.ReadOnly]),
+	SerialNumber1: new RegDef("SerialNumber1", 4, Unit.ASCII, 0, [Attr.ReadOnly]),
+	SerialNumber2: new RegDef("SerialNumber2", 5, Unit.ASCII, 0, [Attr.ReadOnly]),
+	SerialNumber3: new RegDef("SerialNumber3", 6, Unit.ASCII, 0, [Attr.ReadOnly]),
+	SerialNumber4: new RegDef("SerialNumber4", 7, Unit.ASCII, 0, [Attr.ReadOnly]),
 	FwVerControl: new RegDef("FwVerControl", 13, Unit.HEXVAL, 0, [Attr.ReadOnly]),
 	FwVerComms: new RegDef("FwVerComms", 14, Unit.HEXVAL, 0, [Attr.ReadOnly]),
 	SafetyType: new RegDef("SafetyType", 15, Unit.HEXVAL, 0, [Attr.ReadOnly]),
-	RatedPower: new RegDef("RatedPower", 16, Unit.WATT, 1, [Attr.ReadOnly, Attr.LowWord]),
-	RatedPowerHigh: new RegDef("RatedPowerHigh", 17, Unit.WATT, 1, [Attr.ReadOnly, Attr.HighWord]),
+	RatedPower: new RegDef("RatedPower", 16, Unit.WATT, -1, [Attr.ReadOnly, Attr.LowWord]),
+	RatedPowerHigh: new RegDef("RatedPowerHigh", 17, Unit.WATT, -1, [Attr.ReadOnly, Attr.HighWord]),
 	MpptNoAndPhases: new RegDef("MpptNoAndPhases", 18, Unit.HEXVAL, 0, [Attr.ReadOnly]),
 	RemoteLock: new RegDef("RemoteLock", 20, Unit.HEXVAL, 0, [Attr.ReadWrite]),
 	SelfCheckTime: new RegDef("SelfCheckTime", 21, Unit.SECOND, 0, [Attr.ReadWrite]),
-	SysTimeYearMon: new RegDef("SysTimeYearMon", 22, Unit.HEXVAL, 0, [Attr.ReadWrite]),
-	SysTimeDayHour: new RegDef("SysTimeDayHour", 23, Unit.HEXVAL, 0, [Attr.ReadWrite]),
-	SysTimeMinSec: new RegDef("SysTimeMinSec", 24, Unit.HEXVAL, 0, [Attr.ReadWrite]),
+	SysTimeYearMon: new RegDef("SysTimeYearMon", 22, Unit.YEARMON, 0, [Attr.ReadWrite]),
+	SysTimeDayHour: new RegDef("SysTimeDayHour", 23, Unit.DAYHOUR, 0, [Attr.ReadWrite]),
+	SysTimeMinSec: new RegDef("SysTimeMinSec", 24, Unit.MINSEC, 0, [Attr.ReadWrite]),
 	InsImpedMin: new RegDef("InsImpedMin", 25, Unit.OHM, 2, [Attr.ReadWrite]),
 	DcVoltageMax: new RegDef("DcVoltageMax", 26, Unit.VOLT, -1, [Attr.ReadWrite]),
 	GridVoltageMax: new RegDef("GridVoltageMax", 27, Unit.VOLT, -1, [Attr.ReadWrite]),
@@ -99,7 +160,7 @@ const SunsynkRegister = Object.freeze({
 	StartingVoltageMin: new RegDef("StartingVoltageMin", 33, Unit.VOLT, -1, [Attr.ReadWrite]),
 	OverFreqDeratePoint: new RegDef("OverFreqDeratePoint", 34, Unit.HERTZ, -2, [Attr.ReadWrite]),
 	OverFreqDeRate: new RegDef("OverFreqDeRate", 35, Unit.NONE, 0, [Attr.ReadWrite]),
-	InternalTempMax: new RegDef("InternalTempMax", 36, Unit.CELSIUS, -1, [Attr.ReadWrite, Attr.Signed]),
+	InternalTempMax: new RegDef("InternalTempMax", 36, Unit.NONE, -1, [Attr.ReadWrite, Attr.Signed]),
 	CommsAddr: new RegDef("CommsAddr", 37, Unit.NONE, 0, [Attr.ReadOnly]),
 	PowerFactorRegulation: new RegDef("PowerFactorRegulation", 39, Unit.POWERFACTOR, -3, [Attr.ReadWrite]),
 	ActivePowerRegulation: new RegDef("ActivePowerRegulation", 40, Unit.PERCENT, -1, [Attr.ReadWrite]),
@@ -109,10 +170,11 @@ const SunsynkRegister = Object.freeze({
 	FactoryResetEnable: new RegDef("FactoryResetEnable", 44, Unit.NONE, 0, [Attr.ReadWrite]),
 	SelfCheckingTime: new RegDef("SelfCheckingTime", 45, Unit.NONE, 0, [Attr.ReadWrite]),
 	IslandProtectionEnable: new RegDef("IslandProtectionEnable", 46, Unit.NONE, 0, [Attr.ReadWrite]),
+	MaxSolarPower: new RegDef("MaxSolarPower", 53, Unit.WATT, 0, [Attr.ReadOnly]),
 	RunState: new RegDef("RunState", 59, Unit.NONE, 0, [Attr.ReadWrite]),
 	ActiveEnergyToday: new RegDef("ActiveEnergyToday", 60, Unit.WATTH, 2, [Attr.ReadOnly, Attr.Signed]),
 	ReactiveEnergyToday: new RegDef("ReactiveEnergyToday", 61, Unit.VARH, 2, [Attr.ReadOnly, Attr.Signed]),
-	GridWorkTimeToday: new RegDef("GridWorkTimeToday", 62, Unit.SECOND, 0, [Attr.ReadOnly]),
+	GenEnergyToday: new RegDef("GenEnergyToday", 62, Unit.WATTH, 2, [Attr.ReadOnly]),
 	ActiveEnergyTotal: new RegDef("ActiveEnergyTotal", 63, Unit.WATTH, 2, [Attr.ReadOnly, Attr.Signed, Attr.LowWord]),
 	ActiveEnergyTotalHigh: new RegDef("ActiveEnergyTotalHigh", 64, Unit.WATTH, 2, [Attr.ReadOnly, Attr.Signed, Attr.HighWord]),
 	PvEnergyMonth: new RegDef("PvEnergyMonth", 65, Unit.WATTH, 3, [Attr.ReadOnly]),
@@ -192,7 +254,6 @@ const SunsynkRegister = Object.freeze({
 	BatteryTemp: new RegDef("BatteryTemp", 182, Unit.CELSIUS, -1, [Attr.ReadOnly, Attr.Signed]),
 	BatteryVoltage: new RegDef("BatteryVoltage", 183, Unit.VOLT, -2, [Attr.ReadOnly]),
 	BatterySOC: new RegDef("BatterySOC", 184, Unit.PERCENT, 0, [Attr.ReadOnly]),
-	Undefined185: new RegDef("Undefined185", 185, Unit.NONE, 0, [Attr.ReadOnly]),
 	Pv1Power: new RegDef("Pv1Power", 186, Unit.WATT, 0, [Attr.ReadOnly]),
 	Pv2Power: new RegDef("Pv2Power", 187, Unit.WATT, 0, [Attr.ReadOnly]),
 	Pv3Power: new RegDef("Pv3Power", 188, Unit.WATT, 0, [Attr.ReadOnly]),
@@ -266,7 +327,7 @@ const SunsynkRegister = Object.freeze({
 	Prog4Charge: new RegDef("Prog4Charge", 277, Unit.NONE, 0, [Attr.ReadWrite]),
 	Prog5Charge: new RegDef("Prog5Charge", 278, Unit.NONE, 0, [Attr.ReadWrite]),
 	Prog6Charge: new RegDef("Prog6Charge", 279, Unit.NONE, 0, [Attr.ReadWrite]),
-	MicroinverterExportToGridCutoff: new RegDef("MicroinverterExportToGridCutoff", 280, Unit.NONE, 0, [Attr.ReadWrite]),
+	MicroinverterExportToGridCutoff: new RegDef("MicroinverterExportToGridCutoff", 280, Unit.HEXVAL, 0, [Attr.ReadWrite]),
 	RestoreConnectionTime: new RegDef("RestoreConnectionTime", 282, Unit.SECOND, 0, [Attr.ReadWrite]),
 	ArcFaultMode: new RegDef("ArcFaultMode", 283, Unit.NONE, 0, [Attr.ReadWrite]),
 	GridMode: new RegDef("GridMode", 284, Unit.NONE, 0, [Attr.ReadWrite]),
@@ -281,7 +342,44 @@ const SunsynkRegister = Object.freeze({
 	GridPeakShavingPower: new RegDef("GridPeakShavingPower", 293, Unit.WATT, 0, [Attr.ReadWrite]),
 	SmartLoadOpenDelay: new RegDef("SmartLoadOpenDelay", 294, Unit.SECOND, 0, [Attr.ReadWrite]),
 	OutputPfValue: new RegDef("OutputPfValue", 295, Unit.PERCENT, -1, [Attr.ReadWrite]),
+	ExtRelayBit: new RegDef("ExtRelayBit", 296, Unit.HEXVAL, 0, [Attr.ReadOnly]),
+	ChargingVoltage: new RegDef("ChargingVoltage", 312, Unit.VOLT, -2, [Attr.ReadOnly]),
+	DischargeVoltage: new RegDef("DischargeVoltage", 313, Unit.VOLT, -2, [Attr.ReadOnly]),
+	ChargingCurrentLimiting: new RegDef("ChargingCurrentLimiting", 314, Unit.AMP, 0, [Attr.ReadOnly]),
+	DischargeCurrentLimiting: new RegDef("DischargeCurrentLimiting", 315, Unit.AMP, 0, [Attr.ReadOnly]),
+	RealTimeCapacity: new RegDef("RealTimeCapacity", 316, Unit.PERCENT, 0, [Attr.ReadOnly]),
+	RealTimeVoltage: new RegDef("RealTimeVoltage", 317, Unit.VOLT, -2, [Attr.ReadOnly]),
+	RealTimeCurrent: new RegDef("RealTimeCurrent", 318, Unit.AMP, 0, [Attr.ReadOnly, Attr.Signed]),
+	RealTimeTemp: new RegDef("RealTimeTemp", 319, Unit.CELSIUS, -1, [Attr.ReadOnly]),
+	MaxChargeCurrentLimit: new RegDef("MaxChargeCurrentLimit", 320, Unit.AMP, 0, [Attr.ReadOnly]),
+	MaxDischargeCurrentLimit: new RegDef("MaxDischargeCurrentLimit", 321, Unit.AMP, 0, [Attr.ReadOnly]),
+	LithiumBatteryAlarm: new RegDef("LithiumBatteryAlarm", 322, Unit.NONE, 0, [Attr.ReadOnly]),
+	LithiumBatteryFaultLocation: new RegDef("LithiumBatteryFaultLocation", 323, Unit.HEXVAL, 0, [Attr.ReadOnly]),
+	LithiumBatterySymbol2: new RegDef("LithiumBatterySymbol2", 324, Unit.HEXVAL, 0, [Attr.ReadOnly]),
+	LithiumBatteryType: new RegDef("LithiumBatteryType", 325, Unit.HEXVAL, 0, [Attr.ReadOnly]),
+	Ex_MeterCT: new RegDef("Ex_MeterCT", 326, Unit.HEXVAL, 0, [Attr.ReadOnly]),
+	CT_Ratio: new RegDef("CT_Ratio", 327, Unit.NONE, 0, [Attr.ReadOnly]),
+	SpecialFunctionBits: new RegDef("SpecialFunctionBits", 328, Unit.HEXVAL, 0, [Attr.ReadOnly]),
+	AC_CoupleFrequencyUpperLimit: new RegDef("AC_CoupleFrequencyUpperLimit", 329, Unit.HERTZ, -2, [Attr.ReadOnly]),
+	CommBoardSettingFunction: new RegDef("CommBoardSettingFunction", 330, Unit.HEXVAL, 0, [Attr.ReadOnly]),
+	ParallelRegister1: new RegDef("ParallelRegister1", 417, Unit.HEXVAL, 0, [Attr.ReadOnly]),
+	ParallelRegister2: new RegDef("ParallelRegister2", 418, Unit.HEXVAL, 0, [Attr.ReadOnly]),
 	Efficiency: new RegDef("Efficiency", 0, Unit.PERCENT, -1, [Attr.ReadOnly, Attr.Virtual]),
 	PvPowerTotal: new RegDef("PvPowerTotal", 0, Unit.WATT, 0, [Attr.ReadOnly, Attr.Virtual]),
 
 });
+
+class SunsynkRegisterMap {
+	constructor() {
+		for (let r of Object.values(SunsynkRegister)) {
+			if (r.attr.has(Attr.LowWord)) {
+				r.reg2 = SunsynkRegister[r.name + 'High'];
+			} else if (r.attr.has(Attr.HighWord)) {
+				r.reg2 = SunsynkRegister[r.name.slice(0, -4)];
+			}
+			this[r.addr] = r;
+		}
+	}
+};
+
+const sunsynkRegisterMap = new SunsynkRegisterMap();
