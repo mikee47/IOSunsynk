@@ -18,6 +18,7 @@ const Attr = Object.freeze({
 $enum_Attr
 });
 
+const SCALE_0_0001 = -4;
 const SCALE_0_001 = -3;
 const SCALE_0_01 = -2;
 const SCALE_0_1 = -1;

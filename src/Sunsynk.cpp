@@ -149,12 +149,27 @@ DEFINE_FSTR(Pv3Power, "Pv3Power")
 DEFINE_FSTR(Pv4Power, "Pv4Power")
 DEFINE_FSTR(BatteryPower, "BatteryPower")
 DEFINE_FSTR(BatteryCurrent, "BatteryCurrent")
+DEFINE_FSTR(LoadFrequency, "LoadFrequency")
 DEFINE_FSTR(InverterFrequency, "InverterFrequency")
 DEFINE_FSTR(GridRelayStatus, "GridRelayStatus")
 DEFINE_FSTR(AuxRelayStatus, "AuxRelayStatus")
+DEFINE_FSTR(GeneratorFrequency, "GeneratorFrequency")
+DEFINE_FSTR(BatteryControlMode, "BatteryControlMode")
+DEFINE_FSTR(BatteryEqualizationVoltage, "BatteryEqualizationVoltage")
+DEFINE_FSTR(BatteryAbsorptionVoltage, "BatteryAbsorptionVoltage")
+DEFINE_FSTR(BatteryFloatVoltage, "BatteryFloatVoltage")
 DEFINE_FSTR(BatteryCapacity, "BatteryCapacity")
+DEFINE_FSTR(BatteryEmptyVoltage, "BatteryEmptyVoltage")
+DEFINE_FSTR(ZeroExportPowerLimit, "ZeroExportPowerLimit")
+DEFINE_FSTR(BatteryEqualizationDayCycle, "BatteryEqualizationDayCycle")
+DEFINE_FSTR(BatteryEqualizationTime, "BatteryEqualizationTime")
+DEFINE_FSTR(BatteryTempCo, "BatteryTempCo")
 DEFINE_FSTR(BatteryChargeMax, "BatteryChargeMax")
 DEFINE_FSTR(BatteryDischargeMax, "BatteryDischargeMax")
+DEFINE_FSTR(BatteryVoltOrCapacity, "BatteryVoltOrCapacity")
+DEFINE_FSTR(BatteryLithiumWakeupSignBit, "BatteryLithiumWakeupSignBit")
+DEFINE_FSTR(BatteryResistance, "BatteryResistance")
+DEFINE_FSTR(BatteryChargingEfficiency, "BatteryChargingEfficiency")
 DEFINE_FSTR(BatteryCapacityShutdown, "BatteryCapacityShutdown")
 DEFINE_FSTR(BatteryCapacityRestart, "BatteryCapacityRestart")
 DEFINE_FSTR(BatteryCapacityLow, "BatteryCapacityLow")
@@ -251,8 +266,40 @@ DEFINE_FSTR(CT_Ratio, "CT_Ratio")
 DEFINE_FSTR(SpecialFunctionBits, "SpecialFunctionBits")
 DEFINE_FSTR(AC_CoupleFrequencyUpperLimit, "AC_CoupleFrequencyUpperLimit")
 DEFINE_FSTR(CommBoardSettingFunction, "CommBoardSettingFunction")
+DEFINE_FSTR(Solar1WindEnable, "Solar1WindEnable")
+DEFINE_FSTR(Solar2WindEnable, "Solar2WindEnable")
+DEFINE_FSTR(WindVoltage1, "WindVoltage1")
+DEFINE_FSTR(WindVoltage2, "WindVoltage2")
+DEFINE_FSTR(WindVoltage3, "WindVoltage3")
+DEFINE_FSTR(WindVoltage4, "WindVoltage4")
+DEFINE_FSTR(WindVoltage5, "WindVoltage5")
+DEFINE_FSTR(WindVoltage6, "WindVoltage6")
+DEFINE_FSTR(WindVoltage7, "WindVoltage7")
+DEFINE_FSTR(WindVoltage8, "WindVoltage8")
+DEFINE_FSTR(WindVoltage9, "WindVoltage9")
+DEFINE_FSTR(WindVoltage10, "WindVoltage10")
+DEFINE_FSTR(WindVoltage11, "WindVoltage11")
+DEFINE_FSTR(WindVoltage12, "WindVoltage12")
+DEFINE_FSTR(WindCurrent1, "WindCurrent1")
+DEFINE_FSTR(WindCurrent2, "WindCurrent2")
+DEFINE_FSTR(WindCurrent3, "WindCurrent3")
+DEFINE_FSTR(WindCurrent4, "WindCurrent4")
+DEFINE_FSTR(WindCurrent5, "WindCurrent5")
+DEFINE_FSTR(WindCurrent6, "WindCurrent6")
+DEFINE_FSTR(WindCurrent7, "WindCurrent7")
+DEFINE_FSTR(WindCurrent8, "WindCurrent8")
+DEFINE_FSTR(WindCurrent9, "WindCurrent9")
+DEFINE_FSTR(WindCurrent10, "WindCurrent10")
+DEFINE_FSTR(WindCurrent11, "WindCurrent11")
+DEFINE_FSTR(WindCurrent12, "WindCurrent12")
+DEFINE_FSTR(ForcedOffGridOperation, "ForcedOffGridOperation")
 DEFINE_FSTR(ParallelRegister1, "ParallelRegister1")
 DEFINE_FSTR(ParallelRegister2, "ParallelRegister2")
+DEFINE_FSTR(LithiumBatteryVersionLow, "LithiumBatteryVersionLow")
+DEFINE_FSTR(LithiumBatteryVersionHigh, "LithiumBatteryVersionHigh")
+DEFINE_FSTR(SyncTimeYearMon, "SyncTimeYearMon")
+DEFINE_FSTR(SyncTimeDayHour, "SyncTimeDayHour")
+DEFINE_FSTR(SyncTimeMinSec, "SyncTimeMinSec")
 DEFINE_FSTR(Efficiency, "Efficiency")
 DEFINE_FSTR(PvPowerTotal, "PvPowerTotal")
 } // namespace RegName
@@ -388,12 +435,27 @@ DEFINE_FSTR_ARRAY(regInfo, RegInfo,
 	{&RegName::Pv4Power, 189, Unit::WATT, 0, 0x01},
 	{&RegName::BatteryPower, 190, Unit::WATT, 0, 0x05},
 	{&RegName::BatteryCurrent, 191, Unit::AMP, -2, 0x05},
+	{&RegName::LoadFrequency, 192, Unit::HERTZ, -2, 0x01},
 	{&RegName::InverterFrequency, 193, Unit::HERTZ, -2, 0x01},
 	{&RegName::GridRelayStatus, 194, Unit::NONE, 0, 0x01},
 	{&RegName::AuxRelayStatus, 195, Unit::HEXVAL, 0, 0x01},
+	{&RegName::GeneratorFrequency, 196, Unit::HERTZ, -2, 0x01},
+	{&RegName::BatteryControlMode, 200, Unit::NONE, 0, 0x01},
+	{&RegName::BatteryEqualizationVoltage, 201, Unit::VOLT, -2, 0x02},
+	{&RegName::BatteryAbsorptionVoltage, 202, Unit::VOLT, -2, 0x02},
+	{&RegName::BatteryFloatVoltage, 203, Unit::VOLT, -2, 0x02},
 	{&RegName::BatteryCapacity, 204, Unit::AMPH, 0, 0x02},
+	{&RegName::BatteryEmptyVoltage, 205, Unit::VOLT, -2, 0x02},
+	{&RegName::ZeroExportPowerLimit, 206, Unit::WATT, 0, 0x02},
+	{&RegName::BatteryEqualizationDayCycle, 207, Unit::NONE, 0, 0x02},
+	{&RegName::BatteryEqualizationTime, 208, Unit::NONE, 0, 0x02},
+	{&RegName::BatteryTempCo, 209, Unit::NONE, 0, 0x06},
 	{&RegName::BatteryChargeMax, 210, Unit::AMP, 0, 0x02},
 	{&RegName::BatteryDischargeMax, 211, Unit::AMP, 0, 0x02},
+	{&RegName::BatteryVoltOrCapacity, 213, Unit::NONE, 0, 0x02},
+	{&RegName::BatteryLithiumWakeupSignBit, 214, Unit::NONE, 0, 0x02},
+	{&RegName::BatteryResistance, 215, Unit::OHM, -4, 0x02},
+	{&RegName::BatteryChargingEfficiency, 216, Unit::PERCENT, -1, 0x02},
 	{&RegName::BatteryCapacityShutdown, 217, Unit::PERCENT, 0, 0x02},
 	{&RegName::BatteryCapacityRestart, 218, Unit::PERCENT, 0, 0x02},
 	{&RegName::BatteryCapacityLow, 219, Unit::PERCENT, 0, 0x02},
@@ -490,8 +552,40 @@ DEFINE_FSTR_ARRAY(regInfo, RegInfo,
 	{&RegName::SpecialFunctionBits, 328, Unit::HEXVAL, 0, 0x01},
 	{&RegName::AC_CoupleFrequencyUpperLimit, 329, Unit::HERTZ, -2, 0x01},
 	{&RegName::CommBoardSettingFunction, 330, Unit::HEXVAL, 0, 0x01},
+	{&RegName::Solar1WindEnable, 390, Unit::NONE, 0, 0x02},
+	{&RegName::Solar2WindEnable, 391, Unit::NONE, 0, 0x02},
+	{&RegName::WindVoltage1, 392, Unit::VOLT, -1, 0x02},
+	{&RegName::WindVoltage2, 393, Unit::VOLT, -1, 0x02},
+	{&RegName::WindVoltage3, 394, Unit::VOLT, -1, 0x02},
+	{&RegName::WindVoltage4, 395, Unit::VOLT, -1, 0x02},
+	{&RegName::WindVoltage5, 396, Unit::VOLT, -1, 0x02},
+	{&RegName::WindVoltage6, 397, Unit::VOLT, -1, 0x02},
+	{&RegName::WindVoltage7, 398, Unit::VOLT, -1, 0x02},
+	{&RegName::WindVoltage8, 399, Unit::VOLT, -1, 0x02},
+	{&RegName::WindVoltage9, 400, Unit::VOLT, -1, 0x02},
+	{&RegName::WindVoltage10, 401, Unit::VOLT, -1, 0x02},
+	{&RegName::WindVoltage11, 402, Unit::VOLT, -1, 0x02},
+	{&RegName::WindVoltage12, 403, Unit::VOLT, -1, 0x02},
+	{&RegName::WindCurrent1, 404, Unit::AMP, -1, 0x02},
+	{&RegName::WindCurrent2, 405, Unit::AMP, -1, 0x02},
+	{&RegName::WindCurrent3, 406, Unit::AMP, -1, 0x02},
+	{&RegName::WindCurrent4, 407, Unit::AMP, -1, 0x02},
+	{&RegName::WindCurrent5, 408, Unit::AMP, -1, 0x02},
+	{&RegName::WindCurrent6, 409, Unit::AMP, -1, 0x02},
+	{&RegName::WindCurrent7, 410, Unit::AMP, -1, 0x02},
+	{&RegName::WindCurrent8, 411, Unit::AMP, -1, 0x02},
+	{&RegName::WindCurrent9, 412, Unit::AMP, -1, 0x02},
+	{&RegName::WindCurrent10, 413, Unit::AMP, -1, 0x02},
+	{&RegName::WindCurrent11, 414, Unit::AMP, -1, 0x02},
+	{&RegName::WindCurrent12, 415, Unit::AMP, -1, 0x02},
+	{&RegName::ForcedOffGridOperation, 416, Unit::HEXVAL, 0, 0x01},
 	{&RegName::ParallelRegister1, 417, Unit::HEXVAL, 0, 0x01},
 	{&RegName::ParallelRegister2, 418, Unit::HEXVAL, 0, 0x01},
+	{&RegName::LithiumBatteryVersionLow, 419, Unit::HEXVAL, 0, 0x01},
+	{&RegName::LithiumBatteryVersionHigh, 420, Unit::HEXVAL, 0, 0x01},
+	{&RegName::SyncTimeYearMon, 421, Unit::YEARMON, 0, 0x02},
+	{&RegName::SyncTimeDayHour, 422, Unit::DAYHOUR, 0, 0x02},
+	{&RegName::SyncTimeMinSec, 423, Unit::MINSEC, 0, 0x02},
 	{&RegName::Efficiency, 0, Unit::PERCENT, -1, 0x21},
 	{&RegName::PvPowerTotal, 0, Unit::WATT, 0, 0x21},
 )

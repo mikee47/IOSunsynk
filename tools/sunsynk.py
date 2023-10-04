@@ -43,6 +43,7 @@ class Unit(IntEnum):
         return suffixes.get(self.value) or ''
 
 
+SCALE_0_0001 = -4
 SCALE_0_001 = -3
 SCALE_0_01 = -2
 SCALE_0_1 = -1
@@ -217,12 +218,27 @@ SUNSYNK_REGISTERS = [
     RegDef(189, 'Pv4Power', Unit.WATT),
     RegDef(190, 'BatteryPower', Unit.WATT, SCALE_NONE, [Attr.ReadOnly, Attr.Signed]),
     RegDef(191, 'BatteryCurrent', Unit.AMP, SCALE_0_01, [Attr.ReadOnly, Attr.Signed]),
+    RegDef(192, 'LoadFrequency', Unit.HERTZ, SCALE_0_01),
     RegDef(193, 'InverterFrequency', Unit.HERTZ, SCALE_0_01),
     RegDef(194, 'GridRelayStatus', Unit.NONE),
     RegDef(195, 'AuxRelayStatus'),
+    RegDef(196, 'GeneratorFrequency', Unit.HERTZ, SCALE_0_01),
+    RegDef(200, 'BatteryControlMode', Unit.NONE),
+    RegDef(201, 'BatteryEqualizationVoltage', Unit.VOLT, SCALE_0_01, [Attr.ReadWrite]),
+    RegDef(202, 'BatteryAbsorptionVoltage', Unit.VOLT, SCALE_0_01, [Attr.ReadWrite]),
+    RegDef(203, 'BatteryFloatVoltage', Unit.VOLT, SCALE_0_01, [Attr.ReadWrite]),
     RegDef(204, 'BatteryCapacity', Unit.AMPH, SCALE_NONE, [Attr.ReadWrite]),
+    RegDef(205, 'BatteryEmptyVoltage', Unit.VOLT, SCALE_0_01, [Attr.ReadWrite]),
+    RegDef(206, 'ZeroExportPowerLimit', Unit.WATT, SCALE_NONE, [Attr.ReadWrite]),
+    RegDef(207, 'BatteryEqualizationDayCycle', Unit.NONE, SCALE_NONE, [Attr.ReadWrite]), # In days (90)
+    RegDef(208, 'BatteryEqualizationTime', Unit.NONE, SCALE_NONE, [Attr.ReadWrite]),
+    RegDef(209, 'BatteryTempCo', Unit.NONE, SCALE_NONE, [Attr.ReadWrite, Attr.Signed]), # mV / deg. C
     RegDef(210, 'BatteryChargeMax', Unit.AMP, SCALE_NONE, [Attr.ReadWrite]),
     RegDef(211, 'BatteryDischargeMax', Unit.AMP, SCALE_NONE, [Attr.ReadWrite]),
+    RegDef(213, 'BatteryVoltOrCapacity', Unit.NONE, SCALE_NONE, [Attr.ReadWrite]), # 0: voltage, 1: capacity, 2: no battery
+    RegDef(214, 'BatteryLithiumWakeupSignBit', Unit.NONE, SCALE_NONE, [Attr.ReadWrite]), # 0: enabled, 1: disabled
+    RegDef(215, 'BatteryResistance', Unit.OHM, SCALE_0_0001, [Attr.ReadWrite]),
+    RegDef(216, 'BatteryChargingEfficiency', Unit.PERCENT, SCALE_0_1, [Attr.ReadWrite]),
     RegDef(217, 'BatteryCapacityShutdown', Unit.PERCENT, SCALE_NONE, [Attr.ReadWrite]),
     RegDef(218, 'BatteryCapacityRestart', Unit.PERCENT, SCALE_NONE, [Attr.ReadWrite]),
     RegDef(219, 'BatteryCapacityLow', Unit.PERCENT, SCALE_NONE, [Attr.ReadWrite]),
@@ -321,8 +337,44 @@ SUNSYNK_REGISTERS = [
     RegDef(329, 'AC_CoupleFrequencyUpperLimit', Unit.HERTZ, SCALE_0_01),
     RegDef(330, 'CommBoardSettingFunction'),
 
+    RegDef(390, 'Solar1WindEnable', Unit.NONE, SCALE_NONE, [Attr.ReadWrite]), # 0: disable, 1: enable
+    RegDef(391, 'Solar2WindEnable', Unit.NONE, SCALE_NONE, [Attr.ReadWrite]), # 0: disable, 1: enable
+    RegDef(392, 'WindVoltage1', Unit.VOLT, SCALE_0_1, [Attr.ReadWrite]), # 500 - 5000
+    RegDef(393, 'WindVoltage2', Unit.VOLT, SCALE_0_1, [Attr.ReadWrite]), # 500 - 5000
+    RegDef(394, 'WindVoltage3', Unit.VOLT, SCALE_0_1, [Attr.ReadWrite]), # 500 - 5000
+    RegDef(395, 'WindVoltage4', Unit.VOLT, SCALE_0_1, [Attr.ReadWrite]), # 500 - 5000
+    RegDef(396, 'WindVoltage5', Unit.VOLT, SCALE_0_1, [Attr.ReadWrite]), # 500 - 5000
+    RegDef(397, 'WindVoltage6', Unit.VOLT, SCALE_0_1, [Attr.ReadWrite]), # 500 - 5000
+    RegDef(398, 'WindVoltage7', Unit.VOLT, SCALE_0_1, [Attr.ReadWrite]), # 500 - 5000
+    RegDef(399, 'WindVoltage8', Unit.VOLT, SCALE_0_1, [Attr.ReadWrite]), # 500 - 5000
+    RegDef(400, 'WindVoltage9', Unit.VOLT, SCALE_0_1, [Attr.ReadWrite]), # 500 - 5000
+    RegDef(401, 'WindVoltage10', Unit.VOLT, SCALE_0_1, [Attr.ReadWrite]), # 500 - 5000
+    RegDef(402, 'WindVoltage11', Unit.VOLT, SCALE_0_1, [Attr.ReadWrite]), # 500 - 5000
+    RegDef(403, 'WindVoltage12', Unit.VOLT, SCALE_0_1, [Attr.ReadWrite]), # 500 - 5000
+    RegDef(404, 'WindCurrent1', Unit.AMP, SCALE_0_1, [Attr.ReadWrite]), # 0 - 200
+    RegDef(405, 'WindCurrent2', Unit.AMP, SCALE_0_1, [Attr.ReadWrite]), # 0 - 200
+    RegDef(406, 'WindCurrent3', Unit.AMP, SCALE_0_1, [Attr.ReadWrite]), # 0 - 200
+    RegDef(407, 'WindCurrent4', Unit.AMP, SCALE_0_1, [Attr.ReadWrite]), # 0 - 200
+    RegDef(408, 'WindCurrent5', Unit.AMP, SCALE_0_1, [Attr.ReadWrite]), # 0 - 200
+    RegDef(409, 'WindCurrent6', Unit.AMP, SCALE_0_1, [Attr.ReadWrite]), # 0 - 200
+    RegDef(410, 'WindCurrent7', Unit.AMP, SCALE_0_1, [Attr.ReadWrite]), # 0 - 200
+    RegDef(411, 'WindCurrent8', Unit.AMP, SCALE_0_1, [Attr.ReadWrite]), # 0 - 200
+    RegDef(412, 'WindCurrent9', Unit.AMP, SCALE_0_1, [Attr.ReadWrite]), # 0 - 200
+    RegDef(413, 'WindCurrent10', Unit.AMP, SCALE_0_1, [Attr.ReadWrite]), # 0 - 200
+    RegDef(414, 'WindCurrent11', Unit.AMP, SCALE_0_1, [Attr.ReadWrite]), # 0 - 200
+    RegDef(415, 'WindCurrent12', Unit.AMP, SCALE_0_1, [Attr.ReadWrite]), # 0 - 200
+
+    RegDef(416, 'ForcedOffGridOperation'),
+
     RegDef(417, 'ParallelRegister1'),
     RegDef(418, 'ParallelRegister2'),
+
+    RegDef(419, 'LithiumBatteryVersionLow'),
+    RegDef(420, 'LithiumBatteryVersionHigh'),
+
+    RegDef(421, 'SyncTimeYearMon', Unit.YEARMON, SCALE_NONE, [Attr.ReadWrite]),
+    RegDef(422, 'SyncTimeDayHour', Unit.DAYHOUR, SCALE_NONE, [Attr.ReadWrite]),
+    RegDef(423, 'SyncTimeMinSec', Unit.MINSEC, SCALE_NONE, [Attr.ReadWrite]),
 
     # Last readable register 698 - reading 699+ fails
 
