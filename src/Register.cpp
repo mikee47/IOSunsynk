@@ -168,7 +168,7 @@ int RegisterSet::getRawValue(Register reg) const
 			return getPvPowerTotal();
 
 		default:
-			return 0;
+			break;
 		}
 	}
 

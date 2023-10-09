@@ -378,8 +378,9 @@ SUNSYNK_REGISTERS = [
 
     # Last readable register 698 - reading 699+ fails
 
-    RegDef(0, 'Efficiency', Unit.PERCENT, SCALE_0_1, [Attr.ReadOnly, Attr.Virtual]),
-    RegDef(0, 'PvPowerTotal', Unit.WATT, SCALE_NONE, [Attr.ReadOnly, Attr.Virtual]),
+    RegDef(0xffff, 'Efficiency', Unit.PERCENT, SCALE_0_1, [Attr.ReadOnly, Attr.Virtual]),
+    RegDef(0xffff, 'PvPowerTotal', Unit.WATT, SCALE_NONE, [Attr.ReadOnly, Attr.Virtual]),
+    RegDef(0xffff, 'AuxEnergyToday', Unit.WATTH, SCALE_100, [Attr.ReadOnly, Attr.Virtual]),
 ]
 
 SUNSYNK_REGMAP = OrderedDict([(r.addr, r) for r in SUNSYNK_REGISTERS])

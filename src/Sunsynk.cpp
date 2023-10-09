@@ -302,6 +302,7 @@ DEFINE_FSTR(SyncTimeDayHour, "SyncTimeDayHour")
 DEFINE_FSTR(SyncTimeMinSec, "SyncTimeMinSec")
 DEFINE_FSTR(Efficiency, "Efficiency")
 DEFINE_FSTR(PvPowerTotal, "PvPowerTotal")
+DEFINE_FSTR(AuxEnergyToday, "AuxEnergyToday")
 } // namespace RegName
 
 DEFINE_FSTR_ARRAY(regInfo, RegInfo,
@@ -586,8 +587,9 @@ DEFINE_FSTR_ARRAY(regInfo, RegInfo,
 	{&RegName::SyncTimeYearMon, 421, Unit::YEARMON, 0, 0x02},
 	{&RegName::SyncTimeDayHour, 422, Unit::DAYHOUR, 0, 0x02},
 	{&RegName::SyncTimeMinSec, 423, Unit::MINSEC, 0, 0x02},
-	{&RegName::Efficiency, 0, Unit::PERCENT, -1, 0x21},
-	{&RegName::PvPowerTotal, 0, Unit::WATT, 0, 0x21},
+	{&RegName::Efficiency, 65535, Unit::PERCENT, -1, 0x21},
+	{&RegName::PvPowerTotal, 65535, Unit::WATT, 0, 0x21},
+	{&RegName::AuxEnergyToday, 65535, Unit::WATTH, 2, 0x21},
 )
 
 RegInfo getRegInfo(Register reg)

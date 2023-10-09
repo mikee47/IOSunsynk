@@ -412,8 +412,9 @@ const SunsynkRegister = Object.freeze({
 	SyncTimeYearMon: new RegDef("SyncTimeYearMon", 421, Unit.YEARMON, 0, [Attr.ReadWrite]),
 	SyncTimeDayHour: new RegDef("SyncTimeDayHour", 422, Unit.DAYHOUR, 0, [Attr.ReadWrite]),
 	SyncTimeMinSec: new RegDef("SyncTimeMinSec", 423, Unit.MINSEC, 0, [Attr.ReadWrite]),
-	Efficiency: new RegDef("Efficiency", 0, Unit.PERCENT, -1, [Attr.ReadOnly, Attr.Virtual]),
-	PvPowerTotal: new RegDef("PvPowerTotal", 0, Unit.WATT, 0, [Attr.ReadOnly, Attr.Virtual]),
+	Efficiency: new RegDef("Efficiency", 65535, Unit.PERCENT, -1, [Attr.ReadOnly, Attr.Virtual]),
+	PvPowerTotal: new RegDef("PvPowerTotal", 65535, Unit.WATT, 0, [Attr.ReadOnly, Attr.Virtual]),
+	AuxEnergyToday: new RegDef("AuxEnergyToday", 65535, Unit.WATTH, 2, [Attr.ReadOnly, Attr.Virtual]),
 
 });
 

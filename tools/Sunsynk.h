@@ -26,7 +26,7 @@ $enum_Attr
 
 using Attributes = BitSet<uint8_t, Attr, $enum_Attr_len>;
 
-enum class Register: uint8_t {
+enum class Register: uint16_t {
 $enum_Register
 };
 

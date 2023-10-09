@@ -50,7 +50,7 @@ enum class Attr: uint8_t {
 
 using Attributes = BitSet<uint8_t, Attr, 6>;
 
-enum class Register: uint8_t {
+enum class Register: uint16_t {
 	DeviceType = 0,
 	ModbusAddress = 1,
 	CommsProtocolVersion = 2,
@@ -334,9 +334,10 @@ enum class Register: uint8_t {
 	SyncTimeMinSec = 280,
 	Efficiency = 281,
 	PvPowerTotal = 282,
+	AuxEnergyToday = 283,
 };
 
-constexpr size_t registerCount = 283;
+constexpr size_t registerCount = 284;
 
 struct RegInfo {
 	const FlashString* name;
