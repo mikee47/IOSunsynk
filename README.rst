@@ -1,14 +1,14 @@
 IOSunsynk
 =========
 
-Sunsynk hybrid inverter IO control library
+Sunsynk hybrid inverter IO control library for https://github.com/SmingHub/Sming.
 
 .. image:: xxxxxxxx
 
-Use BMS RS485 port (top left, next to BMS CAN port).
+Connect to inverter via BMS RS485 port (top left, next to BMS CAN port).
 
-RS485 interface should not have a termination resistor.
-At least, the typical 120 ohm value is too low - remove if present.
+The RS485 interface circuit should not have a termination resistor.
+Typical interfaces include a 120 ohm termination which is too low - remove if present.
 
 Open-circuit A/B voltage is between 4-5v, drops to around 0.5 with 120 ohms.
 
