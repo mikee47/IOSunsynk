@@ -15,3 +15,15 @@ GPIO    Connection
 ======  ============
 
 Code will require adjusting depending on hardware.
+
+
+Main registers are:
+
+175 Inverter Power Total (synced with 178)
+178 Load Power Total
+184 Battery SOC
+186 PV1 Power
+187 PV2 Power
+190 Battery Power
+
+Battery power is calculated automatically when PV or load power registers are updated.

@@ -25,7 +25,38 @@ enum Constants {
 
 using namespace IO::Modbus::Sunsynk;
 
-uint16_t registers[registerCount];
+const unsigned addressCount = 512;
+int16_t registers[addressCount];
+
+int16_t getRegister(Address addr)
+{
+	return registers[unsigned(addr)];
+}
+
+void setRegister(uint16_t addr, uint16_t value)
+{
+	const unsigned selfPower = 50; // Rough figure for self-use
+	const unsigned efficiency = 90;
+	registers[addr] = value;
+
+	if(Address(addr) == Address::LoadPowerTotal) {
+		setRegister(unsigned(Address::InverterPowerTotal), value);
+		break;
+	}
+
+	switch(Address(addr)) {
+	case Address::Pv1Power:
+	case Address::Pv2Power:
+	case Address::InverterPowerTotal: {
+		auto pvPower = getRegister(Address::Pv1Power) + getRegister(Address::Pv2Power);
+		auto inverterPower = getRegister(Address::InverterPowerTotal);
+		auto batteryPower = selfPower + inverterPower - (pvPower * efficiency / 100);
+		registers[unsigned(Address::BatteryPower)] = batteryPower;
+		break;
+	}
+	default:;
+	}
+}
 
 void IRAM_ATTR setSerialDirection(uint8_t segment, IO::Direction direction)
 {
@@ -76,12 +107,12 @@ void handleRS485Request(IO::RS485::Controller& controller)
 		auto& req{data.request};
 		auto& rsp{data.response};
 
-		if(req.address >= registerCount) {
+		if(req.address >= addressCount) {
 			adu.pdu.setException(Exception::IllegalDataAddress);
 			break;
 		}
 
-		registers[req.address] = req.value;
+		setRegister(req.address, req.value);
 		rsp.value = req.value;
 
 		break;
@@ -93,13 +124,13 @@ void handleRS485Request(IO::RS485::Controller& controller)
 		auto& rsp{data.response};
 		auto addr = req.startAddress;
 
-		if(addr > registerCount) {
+		if(addr > addressCount) {
 			adu.pdu.setException(Exception::IllegalDataAddress);
 			break;
 		}
-		auto n = std::min(size_t(req.quantityOfRegisters), registerCount - addr);
+		auto n = std::min(size_t(req.quantityOfRegisters), addressCount - addr);
 		for(unsigned i = 0; i < n; ++i) {
-			registers[addr + i] = req.values[i];
+			setRegister(addr + i, req.values[i]);
 		}
 		rsp.quantityOfRegisters = n;
 		break;
@@ -111,12 +142,12 @@ void handleRS485Request(IO::RS485::Controller& controller)
 		auto& rsp{data.response};
 		auto addr = req.startAddress;
 
-		if(addr > registerCount) {
+		if(addr > addressCount) {
 			adu.pdu.setException(Exception::IllegalDataAddress);
 			break;
 		}
 
-		auto n = std::min(size_t(req.quantityOfRegisters), registerCount - addr);
+		auto n = std::min(size_t(req.quantityOfRegisters), addressCount - addr);
 		rsp.setCount(n);
 		for(unsigned i = 0; i < n; ++i) {
 			rsp.values[i] = registers[addr + i];
