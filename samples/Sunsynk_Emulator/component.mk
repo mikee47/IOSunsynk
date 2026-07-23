@@ -1,0 +1,9 @@
+COMPONENT_SOC := esp8266
+
+COMPONENT_DEPENDS := \
+	IOControl \
+	IOSunsynk
+
+DISABLE_NETWORK := 1
+
+COMPONENT_SEARCH_DIRS := $(abspath $(COMPONENT_PATH)/../../..)

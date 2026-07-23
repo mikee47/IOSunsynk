@@ -32,6 +32,10 @@ $enum_Register
 
 constexpr size_t registerCount = $enum_Register_len;
 
+enum class Address: uint16_t {
+$enum_Address
+};
+
 struct RegInfo {
 	const FlashString* name;
 	uint16_t addr;

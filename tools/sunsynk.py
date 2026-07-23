@@ -420,6 +420,7 @@ def main():
             enum_Attr_len = len(Attr),
             enum_Register = enumValues(SUNSYNK_REGISTERS),
             enum_Register_len = len(SUNSYNK_REGISTERS),
+            enum_Address = "\n".join(f"\t{e.name} = {e.addr}," for e in SUNSYNK_REGISTERS if e.addr != 0xffff),
         )
         generate('src/include/Sunsynk/Sunsynk.h', values)
 
